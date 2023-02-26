@@ -169,7 +169,6 @@ export class UsersRoutes extends CommonRoutesConfig {
                     res.status(500).send({ error: 'Internal server error' });
                 }
             })
-
         return this.app;
     }
 }
