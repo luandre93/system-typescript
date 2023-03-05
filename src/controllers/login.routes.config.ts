@@ -2,6 +2,7 @@ import express from 'express';
 import { CommonRoutesConfig } from '../common/common.routes.config';
 //import { getUserByUsername } from '../database/dal/users.dal';
 import jwt from 'jsonwebtoken';
+import VERSION_API from '../common/version.config';
 /* const ActiveDirectory = require("activedirectory"); */
 interface Config {
     url: string;
@@ -10,15 +11,14 @@ interface Config {
     password: string;
 }
 
-const version: string = "api/v1"
-
 export class LoginRoutes extends CommonRoutesConfig {
+
     constructor(app: express.Application) {
         super(app, 'LoginRoutes');
     }
     configureRoutes() {
         /* let activedirectory: any; */
-        this.app.route(`/${version}/login`)
+        this.app.route(`/${VERSION_API}/login`)
             .post(async (req: express.Request, res: express.Response) => {
                 let options: Config = {
                     username: `${req.body.username}@grupopereira.local`,
