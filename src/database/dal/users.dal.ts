@@ -7,7 +7,7 @@ import { IUser } from '@/interfaces/users.interface'
 import { IUserSession } from '@/interfaces/rules.interface'
 
 async function createUser(user: IUser): Promise<IUser> {
-    return await Users.create({ username: user.username, email: user.email, permitted: user.permitted });
+    return await Users.create({ username: user.username, email: user.email, user_ad: user.user_ad, permitted: user.permitted });
 }
 
 async function createSession(session: IUserSession): Promise<IUserSession> {
@@ -37,9 +37,10 @@ export async function postUser(...userData: IUser[]): Promise<any> {
         if (!existingUser) {
             const groupId: number = 0; // Tipo Usuário = 0 | administrador Tipo = 1.
             const email = userData[0].email;
+            const user_ad = userData[0].user_ad;
             const permitted = userData[0].permitted;
             const session: IUserSession = { user_sessions: "" };
-            const createdUser: IUser = await createUser({ username, email, permitted });
+            const createdUser: IUser = await createUser({ username, email, user_ad, permitted });
             const createdSession: IUserSession = await createSession(session);
             await postGroupUser({ user_id: createdUser.id, group_id: groupId, rule_id: createdSession.id });
         } else {
@@ -53,7 +54,7 @@ export async function postUser(...userData: IUser[]): Promise<any> {
 
 export async function updateUser(user: IUser): Promise<any> {
     return await Users.update(
-        { username: user.username, email: user.email, permitted: user.permitted },
+        { username: user.username, email: user.email, user_ad: user.user_ad, permitted: user.permitted },
         { where: { id: user.id } }
     )
 }
@@ -71,16 +72,16 @@ export async function getAllGroupAndUsers(): Promise<any> {
 }
 
 
-export async function getUserAndGroup(username: string): Promise<any> {
+export async function getUserAndGroupById(id: number): Promise<any> {
     try {
         GroupUsers.belongsTo(Users, { foreignKey: 'user_id' })
         GroupUsers.belongsTo(Groups, { foreignKey: 'group_id' })
         GroupUsers.belongsTo(Rules, { foreignKey: 'rule_id' })
-        const result = await GroupUsers.findOne({
+        let result = await GroupUsers.findOne({
             include: [{
-                model: Users, where: { username: username },
+                model: Users, where: { id: id }
             },
-            { model: Groups },
+            { model: Groups, },
             { model: Rules }],
             raw: false
         })
@@ -90,3 +91,21 @@ export async function getUserAndGroup(username: string): Promise<any> {
     }
 }
 
+export async function getUserAndGroupByUsername(username: string): Promise<any> {
+    try {
+        GroupUsers.belongsTo(Users, { foreignKey: 'user_id' })
+        GroupUsers.belongsTo(Groups, { foreignKey: 'group_id' })
+        GroupUsers.belongsTo(Rules, { foreignKey: 'rule_id' })
+        let result = await GroupUsers.findOne({
+            include: [{
+                model: Users, where: { username: username }
+            },
+            { model: Groups, },
+            { model: Rules }],
+            raw: false
+        })
+        return result;
+    } catch (e) {
+        console.log(e)
+    }
+}

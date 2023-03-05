@@ -1,10 +1,10 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelizeConnection from "../db.config";
 
-
 class Users extends Model {
     public id!: number;
     public username!: string;
+    public user_ad!: boolean;
     public email!: string;
     public permitted!: boolean;
     public readonly createdAt!: Date;
@@ -22,6 +22,7 @@ Users.init({
         type: DataTypes.STRING,
         allowNull: false
     },
+    user_ad: { type: DataTypes.BOOLEAN, allowNull: false },
     email: { type: DataTypes.STRING, allowNull: true },
     permitted: { type: DataTypes.BOOLEAN, allowNull: false },
     createdAt: { type: DataTypes.DATE, allowNull: true },

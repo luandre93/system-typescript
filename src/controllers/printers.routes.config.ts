@@ -1,7 +1,8 @@
 import { CommonRoutesConfig } from '../common/common.routes.config';
 import express from 'express';
-
+import VERSION_API from '@/common/version.config';
 export class PrintersRoutes extends CommonRoutesConfig {
+
     constructor(app: express.Application) {
         super(app, 'PrintersRoutes');
     }
